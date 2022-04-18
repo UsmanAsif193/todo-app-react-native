@@ -1,4 +1,4 @@
-import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -8,9 +8,25 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Keyboard } from "react-native-web";
 import SingleTask from "./components/SingleTask";
 
 export default function App() {
+  const [taskItems, setTaskItems] = useState([]);
+  const [task, setTask] = useState("");
+
+  const handleAddTask = () => {
+    if (task !== "") {
+      Keyboard.dismiss();
+      setTaskItems([...taskItems, task]);
+      setTask("");
+    }
+  };
+
+  const DeleteTask = (item) => {
+    const tempItemsArray = taskItems.filter((x) => x !== item);
+    setTaskItems(tempItemsArray);
+  };
   return (
     <View style={styles.container}>
       {/* Today's Task */}
@@ -18,8 +34,18 @@ export default function App() {
         <Text style={styles.sectionTitle}>Today's Task</Text>
 
         <View style={styles.items}>
-          {/* Single Task */}
-          <SingleTask />
+          {/* All Tasks */}
+
+          {taskItems.length !== 0 ? (
+            taskItems.map((item, i) => (
+              <TouchableOpacity onPress={() => DeleteTask(item)} key={i}>
+                {/* Single Task */}
+                <SingleTask text={item} />
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={styles.noTasks}>No Tasks</Text>
+          )}
         </View>
       </View>
       {/* Write a Task */}
@@ -31,8 +57,10 @@ export default function App() {
           style={styles.input}
           placeholder="Write a Task"
           placeholderTextColor="#898989"
+          onChangeText={(text) => setTask(text)}
+          value={task}
         />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => handleAddTask()}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>
           </View>
@@ -57,6 +85,11 @@ const styles = StyleSheet.create({
   },
   items: {
     marginTop: 30,
+  },
+  noTasks: {
+    textAlign: "center",
+    color: "#898989",
+    fontSize: 18,
   },
   writeTaskWrapper: {
     position: "absolute",
