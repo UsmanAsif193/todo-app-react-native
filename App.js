@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
+import SingleTask from "./components/SingleTask";
 
 export default function App() {
   return (
@@ -8,7 +9,10 @@ export default function App() {
       <View style={styles.tasksWrapper}>
         <Text style={styles.sectionTitle}>Today's Task</Text>
 
-        <View style={styles.items}>{/* Single Task */}</View>
+        <View style={styles.items}>
+          {/* Single Task */}
+          <SingleTask />
+        </View>
       </View>
     </View>
   );
